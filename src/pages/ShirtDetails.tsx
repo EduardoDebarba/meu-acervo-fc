@@ -83,15 +83,29 @@ export function ShirtDetails() {
         {/* Image Section */}
         <div className="flex flex-col gap-4">
           <div 
-            className="overflow-hidden rounded-xl shadow-sm aspect-square"
+            className="overflow-hidden rounded-xl shadow-sm aspect-square relative"
             style={{ backgroundColor: shirt.imageBgColor || '#FFFFFF' }}
           >
             {shirt.imageUrls && shirt.imageUrls.length > 0 ? (
-              <img
-                src={shirt.imageUrls[mainImageIndex]}
-                alt={`${shirt.team} ${shirt.season}`}
-                className="h-full w-full object-contain"
-              />
+              <Dialog>
+                <DialogTrigger className="h-full w-full outline-none">
+                  <img
+                    src={shirt.imageUrls[mainImageIndex]}
+                    alt={`${shirt.team} ${shirt.season}`}
+                    className="h-full w-full object-contain cursor-pointer"
+                  />
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl p-1 bg-transparent border-none shadow-none">
+                  <DialogTitle className="sr-only">Visualizar Imagem</DialogTitle>
+                  <div className="relative w-full h-[80vh] flex items-center justify-center">
+                    <img
+                      src={shirt.imageUrls[mainImageIndex]}
+                      alt={`${shirt.team} ${shirt.season}`}
+                      className="max-h-full max-w-full object-contain rounded-md"
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
             ) : (
               <div className="flex h-full items-center justify-center">
                 <ShirtIcon className="h-32 w-32 text-muted-foreground" />
@@ -122,50 +136,52 @@ export function ShirtDetails() {
 
         {/* Details Section */}
         <div className="flex flex-col">
-          <div className="mb-6 flex items-start justify-between">
-            <div>
-              <div className="mb-2 flex items-center gap-2">
-                <h1 className="text-4xl font-bold text-foreground">{shirt.team}</h1>
-                {shirt.isFavorite && <Heart className="h-6 w-6 fill-red-500 text-red-500" />}
-              </div>
-              <p className="text-xl text-muted-foreground">{shirt.season} • {shirt.type}</p>
+          <div className="mb-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <h1 className="text-4xl font-bold text-foreground leading-tight">{shirt.team}</h1>
+              {shirt.isFavorite && <Heart className="h-8 w-8 fill-red-500 text-red-500 shrink-0" />}
             </div>
-            <div className="flex gap-2">
-              <Link
-                to={`/collection/${shirt.id}/edit`}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
-              >
-                <Edit size={18} />
-              </Link>
+            
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-xl text-muted-foreground">{shirt.season} • {shirt.type}</p>
               
-              <Dialog>
-                <DialogTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700">
-                  <Trash2 size={18} />
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Excluir Camisa</DialogTitle>
-                    <DialogDescription>
-                      Tem certeza que deseja excluir esta camisa da sua coleção? Esta ação não pode ser desfeita.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <button
-                      className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted"
-                      onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))}
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                      className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                    >
-                      {isDeleting ? 'Excluindo...' : 'Excluir'}
-                    </button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <div className="flex gap-2 shrink-0">
+                <Link
+                  to={`/collection/${shirt.id}/edit`}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                >
+                  <Edit size={18} />
+                </Link>
+                
+                <Dialog>
+                  <DialogTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700">
+                    <Trash2 size={18} />
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Excluir Camisa</DialogTitle>
+                      <DialogDescription>
+                        Tem certeza que deseja excluir esta camisa da sua coleção? Esta ação não pode ser desfeita.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <button
+                        className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted"
+                        onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {isDeleting ? 'Excluindo...' : 'Excluir'}
+                      </button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
           </div>
 
