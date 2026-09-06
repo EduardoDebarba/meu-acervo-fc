@@ -16,6 +16,7 @@ export function Collection() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('recent');
+  const [hasRestoredScroll, setHasRestoredScroll] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -40,6 +41,19 @@ export function Collection() {
 
     return unsubscribe;
   }, [user]);
+
+  useEffect(() => {
+    if (!loading && !hasRestoredScroll) {
+      const savedScroll = sessionStorage.getItem('collectionScrollPos');
+      if (savedScroll) {
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScroll, 10));
+          sessionStorage.removeItem('collectionScrollPos');
+        }, 10);
+      }
+      setHasRestoredScroll(true);
+    }
+  }, [loading, hasRestoredScroll]);
 
   const filteredAndSortedShirts = [...shirts]
     .filter(shirt => 
@@ -138,7 +152,11 @@ export function Collection() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredAndSortedShirts.map((shirt) => (
-            <Link key={shirt.id} to={`/collection/${shirt.id}`}>
+            <Link 
+              key={shirt.id} 
+              to={`/collection/${shirt.id}`}
+              onClick={() => sessionStorage.setItem('collectionScrollPos', window.scrollY.toString())}
+            >
               <Card className="group overflow-hidden transition-all hover:shadow-md">
                 <div 
                   className="aspect-square w-full overflow-hidden" 
